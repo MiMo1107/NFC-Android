@@ -24,8 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NFCReader"></activity>
-        <activity android:name=".NFCWriter"></activity>
+        <activity android:name=".NFCReader" android:parentActivityName=".MainActivity" />
+        <activity android:name=".NFCWriter" android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>
