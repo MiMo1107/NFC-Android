@@ -1,9 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="dk.edu.mikkel.nfc.NDEFEraser">
+    tools:context="dk.edu.mikkel.nfc.NFCReader"
+    android:orientation="vertical"
+    android:padding="10dp">
 
-</android.support.constraint.ConstraintLayout>
+    <ImageView
+        android:id="@+id/erase_searching"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/nfc_search"
+        android:onClick="clickTag"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Searching for NFC tags..."
+        android:gravity="center"
+        android:layout_marginTop="5dp"/>
+    <TextView
+        android:id="@+id/erase_ndefNotFormated"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="NDEF Formatable"
+        android:layout_marginTop="25dp"
+        android:textSize="20dp"/>
+
+    <TextView
+        android:id="@+id/erase_ndefFormated"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="NDEF"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="25dp"
+        android:textSize="20dp"/>
+
+    <Button
+        android:id="@+id/erase_cleanButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Clean NDEF tag"
+        android:clickable="false"
+        android:alpha=".5"
+        android:onClick="cleanClick"/>
+
+    <Button
+        android:id="@+id/erase_addButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add NDEF formatting"
+        android:clickable="false"
+        android:alpha=".5"
+        android:onClick="addClick"/>
+
+    <Button
+        android:id="@+id/erase_deleteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete NDEF formatting"
+        android:clickable="false"
+        android:alpha=".5"
+        android:onClick="deleteClick"/>
+
+
+</LinearLayout>
