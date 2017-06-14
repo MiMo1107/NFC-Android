@@ -182,18 +182,11 @@ public class NFCWriter extends AppCompatActivity {
         WriteModeOn();
     }
 
-
-
-    /******************************************************************************
-     **********************************Enable Write********************************
-     ******************************************************************************/
     private void WriteModeOn(){
         writeMode = true;
         nfcAdapter.enableForegroundDispatch(this, pendingIntent, writeTagFilters, null);
     }
-    /******************************************************************************
-     **********************************Disable Write*******************************
-     ******************************************************************************/
+
     private void WriteModeOff(){
         writeMode = false;
         nfcAdapter.disableForegroundDispatch(this);

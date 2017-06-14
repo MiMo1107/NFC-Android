@@ -22,4 +22,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this,NFCWriter.class);
         startActivity(intent);
     }
+
+    public void formatNDEF(View view){
+        Intent intent = new Intent(this,NDEFEraser.class);
+        startActivity(intent);
+    }
 }

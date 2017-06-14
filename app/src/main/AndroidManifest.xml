@@ -5,11 +5,15 @@
     <uses-sdk android:minSdkVersion="10" />
 
     <uses-permission android:name="android.permission.NFC" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-feature
         android:name="android.hardware.nfc"
         android:required="true" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -24,8 +28,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NFCReader" android:parentActivityName=".MainActivity" android:label="NFC info"/>
-        <activity android:name=".NFCWriter" android:parentActivityName=".MainActivity" android:label="NFC texting"/>
+        <activity
+            android:name=".NFCReader"
+            android:label="NFC info"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".NFCWriter"
+            android:label="NFC texting"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".NDEFEraser"
+            android:label="Reformat NDEF tag"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>
