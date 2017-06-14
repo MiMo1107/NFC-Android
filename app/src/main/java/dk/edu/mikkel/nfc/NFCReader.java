@@ -78,7 +78,6 @@ public class NFCReader extends AppCompatActivity {
                 || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)
                 || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
             Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
-            // Vibrate for 500 milliseconds
             v.vibrate(100);
             Toast.makeText(this, "Tag discovered", Toast.LENGTH_SHORT).show();
 

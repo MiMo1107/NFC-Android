@@ -2,26 +2,39 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="10dp">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Write a message: ">
+        android:text="Simple text messaging application"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black">
+    </TextView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Does only support NDEF able tags"
+        android:gravity="center"
+        android:textSize="15dp"
+        android:layout_margin="2dp">
     </TextView>
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20sp" >
+        android:layout_marginTop="20sp">
 
         <EditText
             android:id="@+id/edit_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:hint="message" />
+            android:hint="Insert message" />
         <Button
             android:id="@+id/button"
             android:layout_width="wrap_content"
@@ -30,8 +43,15 @@
             android:text="Write" />
     </LinearLayout>
     <TextView
+        android:text="Text content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textSize="20dp"
+        android:textColor="@android:color/black"/>
+    <TextView
         android:id="@+id/nfc_contents"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
+        android:layout_marginTop="5dp"/>
 </LinearLayout>
