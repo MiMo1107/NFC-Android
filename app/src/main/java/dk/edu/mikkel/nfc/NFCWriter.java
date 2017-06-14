@@ -100,8 +100,10 @@ public class NFCWriter extends AppCompatActivity {
                 for (int i = 0; i < rawMsgs.length; i++) {
                     msgs[i] = (NdefMessage) rawMsgs[i];
                 }
+                buildTagViews(msgs);
+            } else {
+                Toast.makeText(context, "Tag not supported", Toast.LENGTH_SHORT).show();
             }
-            buildTagViews(msgs);
         }
     }
     private void buildTagViews(NdefMessage[] msgs) {
@@ -138,7 +140,7 @@ public class NFCWriter extends AppCompatActivity {
         ndef.connect();
         // Write the message
         ndef.writeNdefMessage(message);
-        // Close the connection
+        // Close the connectionnn
         ndef.close();
     }
     private NdefRecord createRecord(String text) throws UnsupportedEncodingException {

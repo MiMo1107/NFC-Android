@@ -46,7 +46,7 @@ public class TextRecord implements ParsedNdefRecord {
 
     public View getView(Activity activity, LayoutInflater inflater, ViewGroup parent, int offset) {
         TextView text = (TextView) inflater.inflate(R.layout.tag_text, parent, false);
-        text.setText(mText);
+        text.setText("NDEF type Text:\n" + mText);
         return text;
     }
 

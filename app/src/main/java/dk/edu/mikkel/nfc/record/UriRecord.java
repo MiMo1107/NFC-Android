@@ -95,8 +95,8 @@ public class UriRecord implements ParsedNdefRecord {
 
     public View getView(Activity activity, LayoutInflater inflater, ViewGroup parent, int offset) {
         TextView text = (TextView) inflater.inflate(R.layout.tag_text, parent, false);
-        text.setAutoLinkMask(Linkify.ALL);
-        text.setText(mUri.toString());
+        text.setAutoLinkMask(Linkify.WEB_URLS);
+        text.setText("NDEF type URI:\n" + mUri.toString());
         return text;
     }
 

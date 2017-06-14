@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -67,47 +68,60 @@ public class NFCReader extends AppCompatActivity {
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)
                 || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)
                 || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
+            Toast.makeText(this, "Tag discovered", Toast.LENGTH_SHORT).show();
 
             Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-            TextView textView = new TextView(getBaseContext());
             NdefMessage[] msgs = null;
             if (rawMsgs != null) {
-                msgs = new NdefMessage[rawMsgs.length];
+                msgs = new NdefMessage[rawMsgs.length + 1];
                 for (int i = 0; i < rawMsgs.length; i++) {
                     msgs[i] = (NdefMessage) rawMsgs[i];
                 }
-
             }
-                Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-
-                textView.append("\nTag Id1: "  + tag.getId());
-                textView.append("\nTag Id2: "  + intent.getByteArrayExtra(NfcAdapter.EXTRA_ID));
-                textView.append("\nTag Describe contents: "  + tag.describeContents());
-                String tech = "";
-                for (int i = 0; i < tag.getTechList().length; i++) {
-                    tech += "\n#" + i + ": " + tag.getTechList()[i] + "; ";
-                }
-                textView.append("\nTech: "  + tech);
-                NfcA nfcA = NfcA.get(tag);
-                if(nfcA != null) {
-                    String atqa = "";
-                    for (int i = 0; i < nfcA.getAtqa().length; i++) {
-                        atqa += "#" + i + ": " + nfcA.getAtqa()[i] + "; ";
-                    }
-                    textView.append("\nNfcA Atqa: " + atqa);
-                    textView.append("\nNfcA Sak: " + nfcA.getSak());
-                    textView.append("\nNfcA MAX: " + nfcA.getMaxTransceiveLength());
-                }
-                IsoDep iso = IsoDep.get(tag);
-                String is = "";
-                if(iso != null) {
-                    for (int i = 0; i < iso.getHistoricalBytes().length; i++) {
-                        is += "#" + i + ": " + iso.getHistoricalBytes()[i] + "; ";
-                    }
-                    textView.append("\nIso hist: "  + is);
-                }
+            byte[] empty = new byte[0];
+            byte[] id = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
+            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+            byte[] payload = dumpTagData(tag).getBytes();
+            NdefRecord record = new NdefRecord(NdefRecord.TNF_UNKNOWN, empty, id, payload);
+            NdefMessage msg = new NdefMessage(new NdefRecord[]{record});
+            if (rawMsgs != null) {
+                msgs[rawMsgs.length] = msg;
+            } else {
+                msgs = new NdefMessage[]{msg};
+            }
             buildTagViews(msgs);
         }
+    }
+
+    private String dumpTagData(Tag tag) {
+        StringBuilder sb = new StringBuilder();
+        byte[] id = tag.getId();
+        sb.append("Tag information: \n");
+        sb.append("ID : ").append(toReversedHex(id)).append('\n');
+
+        String prefix = "android.nfc.tech.";
+        sb.append("Technologies: ");
+        for (String tech : tag.getTechList()) {
+            sb.append(tech.substring(prefix.length()));
+            sb.append(", ");
+        }
+        sb.delete(sb.length() - 2, sb.length());
+
+        return sb.toString();
+    }
+
+    private String toReversedHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < bytes.length; ++i) {
+            if (i > 0) {
+                sb.append(":");
+            }
+            int b = bytes[i] & 0xff;
+            if (b < 0x10)
+                sb.append('0');
+            sb.append(Integer.toHexString(b));
+        }
+        return sb.toString();
     }
 
     void buildTagViews(NdefMessage[] msgs) {
@@ -120,16 +134,18 @@ public class NFCReader extends AppCompatActivity {
         // Parse the first message in the list
         // Build views for all of the sub records
         Date now = new Date();
-        List<ParsedNdefRecord> records = NdefMessageParser.parse(msgs[0]);
-        final int size = records.size();
-        for (int i = 0; i < size; i++) {
-            TextView timeView = new TextView(this);
-            timeView.setText(TIME_FORMAT.format(now));
-            content.addView(timeView, 0);
-            ParsedNdefRecord record = records.get(i);
-            content.addView(record.getView(this, inflater, content, i), 1 + i);
-            content.addView(inflater.inflate(R.layout.tag_divider, content, false), 2 + i);
+        TextView timeView = new TextView(this);
+        timeView.setText("Tag detected -> " + TIME_FORMAT.format(now));
+        content.addView(timeView, 0);
+        for (int i = msgs.length; i > 0; i--) {
+            List<ParsedNdefRecord> records = NdefMessageParser.parse(msgs[i-1]);
+            final int size = records.size();
+            for (int j = 0; j < size; j++) {
+                ParsedNdefRecord record = records.get(j);
+                content.addView(record.getView(this, inflater, content, j), 1 + j);
+            }
         }
+        content.addView(inflater.inflate(R.layout.tag_divider, content, false), 3);
     }
 
     private void nfcSimpleIntent(Intent intent) {
