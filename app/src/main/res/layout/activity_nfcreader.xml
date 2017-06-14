@@ -5,28 +5,29 @@
     android:layout_height="match_parent"
     tools:context="dk.edu.mikkel.nfc.NFCReader"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="10dp">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/nfc_icon"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Ready to read NFC tag"
-        android:gravity="center"
-        android:layout_marginTop="5dp"/>
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-        <LinearLayout
-            android:id="@+id/list"
+        <ImageView
+            android:id="@+id/searching"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-        </LinearLayout>
-    </ScrollView>
-
+            android:src="@drawable/nfc_search"
+            android:onClick="clickTag"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Searching for NFC tags..."
+            android:gravity="center"
+            android:layout_marginTop="5dp"/>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp">
+            <LinearLayout
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            </LinearLayout>
+        </ScrollView>
 </LinearLayout>

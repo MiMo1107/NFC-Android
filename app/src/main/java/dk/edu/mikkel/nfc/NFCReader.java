@@ -1,21 +1,30 @@
 package dk.edu.mikkel.nfc;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
 import android.nfc.tech.NfcA;
+import android.os.Build;
 import android.os.Parcelable;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,6 +77,9 @@ public class NFCReader extends AppCompatActivity {
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)
                 || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)
                 || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
+            Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+            // Vibrate for 500 milliseconds
+            v.vibrate(100);
             Toast.makeText(this, "Tag discovered", Toast.LENGTH_SHORT).show();
 
             Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
@@ -145,22 +157,7 @@ public class NFCReader extends AppCompatActivity {
                 content.addView(record.getView(this, inflater, content, j), 1 + j);
             }
         }
-        content.addView(inflater.inflate(R.layout.tag_divider, content, false), 3);
-    }
-
-    private void nfcSimpleIntent(Intent intent) {
-        String action = intent.getAction();
-
-        if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)
-                || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)
-                || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
-
-            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            byte[] id = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
-            Parcelable[] raw =
-                    intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-
-        }
+        content.addView(inflater.inflate(R.layout.tag_divider, content, false));
     }
 
     @Override
@@ -204,5 +201,25 @@ public class NFCReader extends AppCompatActivity {
     public void onNewIntent(Intent intent) {
         setIntent(intent);
         nfcIntent(intent);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        // TODO Auto-generated method stub
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            ImageView img = (ImageView)findViewById(R.id.searching);
+            AnimationDrawable frameAnimation = (AnimationDrawable) img.getDrawable();
+            frameAnimation.start();
+        }
+    }
+    public void clickTag(View view){
+        ImageView img = (ImageView)findViewById(R.id.searching);
+        AnimationDrawable frameAnimation = (AnimationDrawable) img.getDrawable();
+        if(frameAnimation.isRunning()){
+            frameAnimation.stop();
+        } else {
+            frameAnimation.start();
+        }
     }
 }
