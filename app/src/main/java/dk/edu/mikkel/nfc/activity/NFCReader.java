@@ -1,8 +1,5 @@
-package dk.edu.mikkel.nfc;
+package dk.edu.mikkel.nfc.activity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -13,15 +10,11 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
-import android.nfc.tech.IsoDep;
-import android.nfc.tech.NfcA;
-import android.os.Build;
 import android.os.Parcelable;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,6 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import dk.edu.mikkel.nfc.R;
+import dk.edu.mikkel.nfc.model.NdefMessageParser;
 import dk.edu.mikkel.nfc.record.ParsedNdefRecord;
 
 public class NFCReader extends AppCompatActivity {

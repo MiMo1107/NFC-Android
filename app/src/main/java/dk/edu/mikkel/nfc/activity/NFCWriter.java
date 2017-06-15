@@ -1,6 +1,5 @@
-package dk.edu.mikkel.nfc;
+package dk.edu.mikkel.nfc.activity;
 
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +10,7 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
+import android.nfc.tech.NdefFormatable;
 import android.os.Parcelable;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+
+import dk.edu.mikkel.nfc.R;
 
 public class NFCWriter extends AppCompatActivity {
 
@@ -59,7 +61,6 @@ public class NFCWriter extends AppCompatActivity {
                         Toast.makeText(context, ERROR_DETECTED, Toast.LENGTH_LONG).show();
                     } else {
                         write(message.getText().toString(), myTag);
-                        Toast.makeText(context, WRITE_SUCCESS, Toast.LENGTH_LONG ).show();
                     }
                 } catch (IOException e) {
                     Toast.makeText(context, WRITE_ERROR, Toast.LENGTH_LONG ).show();
@@ -102,7 +103,11 @@ public class NFCWriter extends AppCompatActivity {
                 }
                 buildTagViews(msgs);
             } else {
-                Toast.makeText(context, "Tag not supported", Toast.LENGTH_SHORT).show();
+                if(NdefFormatable.get((Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)) != null){
+                    Toast.makeText(context, "Tag needs to be NDEF formatted", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Tag not supported", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
@@ -134,12 +139,17 @@ public class NFCWriter extends AppCompatActivity {
         NdefMessage message = new NdefMessage(records);
         // Get an instance of Ndef for the tag.
         Ndef ndef = Ndef.get(tag);
-        // Enable I/O
-        ndef.connect();
-        // Write the message
-        ndef.writeNdefMessage(message);
-        // Close the connectionnn
-        ndef.close();
+        if(ndef != null){
+            // Enable I/O
+            ndef.connect();
+            // Write the message
+            ndef.writeNdefMessage(message);
+            // Close the connectionnn
+            ndef.close();
+            Toast.makeText(context, WRITE_SUCCESS, Toast.LENGTH_LONG ).show();
+        } else {
+            Toast.makeText(context, "NDEF format not found", Toast.LENGTH_SHORT).show();
+        }
     }
     private NdefRecord createRecord(String text) throws UnsupportedEncodingException {
         String lang       = "en";

@@ -1,4 +1,4 @@
-package dk.edu.mikkel.nfc;
+package dk.edu.mikkel.nfc.activity;
 
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -30,6 +30,8 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+
+import dk.edu.mikkel.nfc.R;
 
 public class NDEFEraser extends AppCompatActivity {
 
@@ -100,17 +102,21 @@ public class NDEFEraser extends AppCompatActivity {
                     ndefText.setTextColor(Color.parseColor("#000000"));
             } else {
                 Toast.makeText(this, "No NDEF support", Toast.LENGTH_SHORT).show();
-                addButton.setAlpha(0.5f);
-                addButton.setClickable(false);
-                formatText.setTextColor(Color.parseColor("#808080"));
-                deleteButton.setAlpha(0.5f);
-                deleteButton.setClickable(false);
-                cleanButton.setAlpha(0.5f);
-                cleanButton.setClickable(false);
-                ndefText.setTextColor(Color.parseColor("#808080"));
+                cleanView();
             }
         }
     }
+    private void cleanView(){
+        addButton.setAlpha(0.5f);
+        addButton.setClickable(false);
+        formatText.setTextColor(Color.parseColor("#808080"));
+        deleteButton.setAlpha(0.5f);
+        deleteButton.setClickable(false);
+        cleanButton.setAlpha(0.5f);
+        cleanButton.setClickable(false);
+        ndefText.setTextColor(Color.parseColor("#808080"));
+    }
+
     public void cleanClick(View view){
         try {
             NdefRecord[] records = new NdefRecord[]{ createRecord("") };
@@ -155,6 +161,7 @@ public class NDEFEraser extends AppCompatActivity {
             try {
                 ndef.close();
                 Toast.makeText(this, "Clean tag success", Toast.LENGTH_SHORT).show();
+                cleanView();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -180,6 +187,7 @@ public class NDEFEraser extends AppCompatActivity {
                 try {
                     formatable.close();
                     Toast.makeText(this, "Format tag success", Toast.LENGTH_SHORT).show();
+                    cleanView();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -196,6 +204,7 @@ public class NDEFEraser extends AppCompatActivity {
                 }
                 mifare.close();
                 Toast.makeText(this, "Tag formatting deleted", Toast.LENGTH_SHORT).show();
+                cleanView();
             } else {
                 Toast.makeText(this, "Lost connection to the tag", Toast.LENGTH_SHORT).show();
             }

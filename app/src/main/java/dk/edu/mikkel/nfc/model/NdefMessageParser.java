@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package dk.edu.mikkel.nfc;
+package dk.edu.mikkel.nfc.model;
 
 import android.app.Activity;
 import android.nfc.NdefMessage;
@@ -26,6 +26,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import dk.edu.mikkel.nfc.R;
 import dk.edu.mikkel.nfc.record.ParsedNdefRecord;
 import dk.edu.mikkel.nfc.record.SmartPoster;
 import dk.edu.mikkel.nfc.record.TextRecord;

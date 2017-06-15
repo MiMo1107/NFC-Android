@@ -33,7 +33,7 @@ import com.google.common.collect.Iterables;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import dk.edu.mikkel.nfc.NdefMessageParser;
+import dk.edu.mikkel.nfc.model.NdefMessageParser;
 import dk.edu.mikkel.nfc.R;
 
 /**

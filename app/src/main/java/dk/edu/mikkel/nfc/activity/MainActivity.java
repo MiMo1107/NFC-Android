@@ -1,9 +1,11 @@
-package dk.edu.mikkel.nfc;
+package dk.edu.mikkel.nfc.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+import dk.edu.mikkel.nfc.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,6 +27,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void formatNDEF(View view){
         Intent intent = new Intent(this,NDEFEraser.class);
+        startActivity(intent);
+    }
+
+    public void cardInfo(View view){
+        Intent intent = new Intent(this,CardInfo.class);
         startActivity(intent);
     }
 }
