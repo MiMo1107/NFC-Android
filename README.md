@@ -15,6 +15,6 @@ Simple Android application showing the usage of NFC in Android for educational p
 Screenshots to be uploaded soon
 
 ## Inspiration
-https://github.com/nadam/nfc-reader
-https://github.com/devnied/EMV-NFC-Paycard-Enrollment
-http://www.codexpedia.com/android/android-nfc-read-and-write-example/
+- https://github.com/nadam/nfc-reader
+- https://github.com/devnied/EMV-NFC-Paycard-Enrollment
+- http://www.codexpedia.com/android/android-nfc-read-and-write-example/
