@@ -4,12 +4,12 @@ import android.nfc.tech.IsoDep;
 import android.support.compat.BuildConfig;
 import android.util.Log;
 
-import java.io.IOException;
-
 import com.github.devnied.emvnfccard.enums.SwEnum;
 import com.github.devnied.emvnfccard.exception.CommunicationException;
 import com.github.devnied.emvnfccard.parser.IProvider;
 import com.github.devnied.emvnfccard.utils.TlvUtil;
+
+import java.io.IOException;
 
 import fr.devnied.bitlib.BytesUtils;
 
@@ -27,7 +27,7 @@ public class Provider implements IProvider {
     /**
      * Logger
      */
-    private StringBuffer log = new StringBuffer();
+    private final StringBuffer log = new StringBuffer();
 
     /**
      * Tag comm
@@ -40,7 +40,7 @@ public class Provider implements IProvider {
             Log.d(TAG, "send: " + BytesUtils.bytesToString(pCommand));
         }
         log.append("=================<br/>");
-        log.append("<font color='green'><b>send:</b> " + BytesUtils.bytesToString(pCommand)).append("</font><br/>");
+        log.append("<font color='green'><b>send:</b> ").append(BytesUtils.bytesToString(pCommand)).append("</font><br/>");
 
         byte[] response = null;
         try {
@@ -50,7 +50,7 @@ public class Provider implements IProvider {
             throw new CommunicationException(e.getMessage());
         }
 
-        log.append("<font color='blue'><b>resp:</b> " + BytesUtils.bytesToString(response)).append("</font><br/>");
+        log.append("<font color='blue'><b>resp:</b> ").append(BytesUtils.bytesToString(response)).append("</font><br/>");
         Log.d(TAG, "resp: " + BytesUtils.bytesToString(response));
         try {
             Log.d(TAG, "resp: " + TlvUtil.prettyPrintAPDUResponse(response));
@@ -69,8 +69,7 @@ public class Provider implements IProvider {
     /**
      * Setter for the field mTagCom
      *
-     * @param mTagCom
-     *            the mTagCom to set
+     * @param mTagCom the mTagCom to set
      */
     public void setmTagCom(final IsoDep mTagCom) {
         this.mTagCom = mTagCom;

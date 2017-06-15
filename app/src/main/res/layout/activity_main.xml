@@ -16,8 +16,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginRight="20dp">
+            android:layout_marginRight="20dp"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
@@ -66,17 +66,17 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginRight="20dp">
+            android:layout_marginRight="20dp"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:text="Erase NDEF"
+                android:textColor="@color/colorPrimaryDark"
                 android:textSize="20dp"
-                android:textStyle="bold"
-                android:textColor="@color/colorPrimaryDark"/>
+                android:textStyle="bold" />
 
             <ImageButton
                 android:layout_width="wrap_content"
@@ -96,9 +96,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:text="Card reader"
+                android:textColor="@color/colorPrimaryDark"
                 android:textSize="20dp"
-                android:textStyle="bold"
-                android:textColor="@color/colorPrimaryDark"/>
+                android:textStyle="bold" />
 
             <ImageButton
                 android:layout_width="wrap_content"
@@ -108,4 +108,21 @@
 
         </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:text="By Mikkel L. A. Kristensen"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:autoLink="web"
+        android:gravity="center"
+        android:text="https://github.com/MiMo1107/NFC-Android" />
+
 </LinearLayout>

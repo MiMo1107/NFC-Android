@@ -51,7 +51,8 @@
             android:label="Reformat NDEF tag"
             android:parentActivityName=".activity.MainActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.CardInfo"
+        <activity
+            android:name=".activity.CardInfo"
             android:configChanges="orientation"
             android:label="Credit card reader"
             android:parentActivityName=".activity.MainActivity"

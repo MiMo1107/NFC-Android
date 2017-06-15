@@ -1,5 +1,6 @@
 package dk.edu.mikkel.nfc.activity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -12,13 +13,11 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.devnied.emvnfccard.model.EmvCard;
 import com.github.devnied.emvnfccard.parser.EmvParser;
-import com.github.devnied.emvnfccard.parser.IProvider;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -38,10 +37,10 @@ public class CardInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_info);
 
-        mDialog = new AlertDialog.Builder(this).setNeutralButton("Ok", null).create();
+        mDialog = new AlertDialog.Builder(this).setNeutralButton(R.string.general_ok, null).create();
         mAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mAdapter == null) {
-            showMessage("Error", "This device does not support NFC");
+            showMessage(getString(R.string.general_error), getString(R.string.general_noSupport));
             finish();
             return;
         }
@@ -66,42 +65,38 @@ public class CardInfo extends AppCompatActivity {
                 || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)
                 || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
             Tag myTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            if(IsoDep.get(myTag) != null){
+            if (IsoDep.get(myTag) != null) {
                 Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
                 v.vibrate(100);
-                Toast.makeText(this, "Wait while reading data...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.cardInfo_wait, Toast.LENGTH_SHORT).show();
                 getCardInfo(IsoDep.get(myTag));
             } else {
-                Toast.makeText(this, "Can only read ISO tags", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.cardInfo_onlyIso, Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void getCardInfo(IsoDep isoDep){
+    @SuppressLint("SetTextI18n")
+    private void getCardInfo(IsoDep isoDep) {
         try {
             Provider prov = new Provider();
             isoDep.connect();
             prov.setmTagCom(isoDep);
             EmvParser parser = new EmvParser(prov, true);
             EmvCard card = parser.readEmvCard();
-            if(card != null){
+            if (card != null) {
                 number.setText(card.getCardNumber());
-                Log.d("cardnumber",card.getCardNumber());
                 date.setText("" + new SimpleDateFormat("MM/yyyy").format(card.getExpireDate()));
-                Log.d("date","" + card.getExpireDate());
                 type.setText(card.getApplicationLabel());
-                Log.d("type","" + card.getApplicationLabel());
                 pin.setText("" + card.getLeftPinTry());
-                Log.d("pin","" + card.getLeftPinTry());
                 aid.setText(card.getAid());
-                Log.d("aid","" + card.getAid());
-                Toast.makeText(this, "Done reading" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.cardInfo_done, Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Lost connection", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.general_lostConnection, Toast.LENGTH_SHORT).show();
             }
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Lost connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.general_lostConnection, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -110,6 +105,7 @@ public class CardInfo extends AppCompatActivity {
         setIntent(intent);
         readFromIntent(intent);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -131,7 +127,7 @@ public class CardInfo extends AppCompatActivity {
 
     private void showWirelessSettingsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("NFC is not enabled. Please go to the wireless settings to enable it.");
+        builder.setMessage(R.string.general_nfcNotEnabled);
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogInterface, int i) {
                 Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
@@ -144,7 +140,6 @@ public class CardInfo extends AppCompatActivity {
             }
         });
         builder.create().show();
-        return;
     }
 
 }

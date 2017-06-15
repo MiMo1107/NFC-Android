@@ -10,11 +10,11 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -46,11 +46,11 @@ public class NFCReader extends AppCompatActivity {
         nfcIntent(getIntent());
         mTagContent = (LinearLayout) findViewById(R.id.list);
 
-        mDialog = new AlertDialog.Builder(this).setNeutralButton("Ok", null).create();
+        mDialog = new AlertDialog.Builder(this).setNeutralButton(getString(R.string.general_ok), null).create();
 
         mAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mAdapter == null) {
-            showMessage("Error", "This device does not support NFC");
+            showMessage(getString(R.string.general_error), getString(R.string.general_noSupport));
             finish();
             return;
         }
@@ -74,7 +74,7 @@ public class NFCReader extends AppCompatActivity {
                 || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
             Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
             v.vibrate(100);
-            Toast.makeText(this, "Tag discovered", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.general_tagDiscovered, Toast.LENGTH_SHORT).show();
 
             Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
             NdefMessage[] msgs = null;
@@ -102,11 +102,11 @@ public class NFCReader extends AppCompatActivity {
     private String dumpTagData(Tag tag) {
         StringBuilder sb = new StringBuilder();
         byte[] id = tag.getId();
-        sb.append("Tag information: \n");
+        sb.append(getString(R.string.reader_tagInfo));
         sb.append("ID : ").append(toReversedHex(id)).append('\n');
 
         String prefix = "android.nfc.tech.";
-        sb.append("Technologies: ");
+        sb.append(getString(R.string.reader_tech) + '\n');
         for (String tech : tag.getTechList()) {
             sb.append(tech.substring(prefix.length()));
             sb.append(", ");
@@ -130,7 +130,7 @@ public class NFCReader extends AppCompatActivity {
         return sb.toString();
     }
 
-    void buildTagViews(NdefMessage[] msgs) {
+    private void buildTagViews(NdefMessage[] msgs) {
         if (msgs == null || msgs.length == 0) {
             return;
         }
@@ -141,10 +141,10 @@ public class NFCReader extends AppCompatActivity {
         // Build views for all of the sub records
         Date now = new Date();
         TextView timeView = new TextView(this);
-        timeView.setText("Tag detected -> " + TIME_FORMAT.format(now));
+        timeView.setText(getString(R.string.general_tagDiscovered) + " -> " + TIME_FORMAT.format(now));
         content.addView(timeView, 0);
         for (int i = msgs.length; i > 0; i--) {
-            List<ParsedNdefRecord> records = NdefMessageParser.parse(msgs[i-1]);
+            List<ParsedNdefRecord> records = NdefMessageParser.parse(msgs[i - 1]);
             final int size = records.size();
             for (int j = 0; j < size; j++) {
                 ParsedNdefRecord record = records.get(j);
@@ -175,7 +175,7 @@ public class NFCReader extends AppCompatActivity {
 
     private void showWirelessSettingsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("NFC is not enabled. Please go to the wireless settings to enable it.");
+        builder.setMessage(getString(R.string.general_nfcNotEnabled));
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogInterface, int i) {
                 Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
@@ -188,7 +188,6 @@ public class NFCReader extends AppCompatActivity {
             }
         });
         builder.create().show();
-        return;
     }
 
     @Override
@@ -199,18 +198,18 @@ public class NFCReader extends AppCompatActivity {
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        // TODO Auto-generated method stub
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            ImageView img = (ImageView)findViewById(R.id.searching);
+            ImageView img = (ImageView) findViewById(R.id.searching);
             AnimationDrawable frameAnimation = (AnimationDrawable) img.getDrawable();
             frameAnimation.start();
         }
     }
-    public void clickTag(View view){
-        ImageView img = (ImageView)findViewById(R.id.searching);
+
+    public void clickTag(View view) {
+        ImageView img = (ImageView) findViewById(R.id.searching);
         AnimationDrawable frameAnimation = (AnimationDrawable) img.getDrawable();
-        if(frameAnimation.isRunning()){
+        if (frameAnimation.isRunning()) {
             frameAnimation.stop();
         } else {
             frameAnimation.start();

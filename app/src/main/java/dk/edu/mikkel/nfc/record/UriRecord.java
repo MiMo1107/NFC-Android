@@ -15,6 +15,7 @@
  */
 package dk.edu.mikkel.nfc.record;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.net.Uri;
 import android.nfc.NdefRecord;
@@ -31,6 +32,7 @@ import com.google.common.primitives.Bytes;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
+
 import dk.edu.mikkel.nfc.R;
 
 /**
@@ -38,13 +40,11 @@ import dk.edu.mikkel.nfc.R;
  */
 public class UriRecord implements ParsedNdefRecord {
 
-    private static final String TAG = "UriRecord";
-
     public static final String RECORD_TYPE = "UriRecord";
-
+    private static final String TAG = "UriRecord";
     /**
      * NFC Forum "URI Record Type Definition"
-     *
+     * <p>
      * This is a mapping of "URI Identifier Codes" to URI string prefixes,
      * per section 3.2.2 of the NFC Forum URI Record Type Definition document.
      */
@@ -86,22 +86,11 @@ public class UriRecord implements ParsedNdefRecord {
             .put((byte) 0x22, "urn:epc:")
             .put((byte) 0x23, "urn:nfc:")
             .build();
-
+    private static final byte[] EMPTY = new byte[0];
     private final Uri mUri;
 
     private UriRecord(Uri uri) {
         this.mUri = Preconditions.checkNotNull(uri);
-    }
-
-    public View getView(Activity activity, LayoutInflater inflater, ViewGroup parent, int offset) {
-        TextView text = (TextView) inflater.inflate(R.layout.tag_text, parent, false);
-        text.setAutoLinkMask(Linkify.WEB_URLS);
-        text.setText("NDEF type URI:\n" + mUri.toString());
-        return text;
-    }
-
-    public Uri getUri() {
-        return mUri;
     }
 
     /**
@@ -109,7 +98,7 @@ public class UriRecord implements ParsedNdefRecord {
      * This will handle both TNF_WELL_KNOWN / RTD_URI and TNF_ABSOLUTE_URI.
      *
      * @throws IllegalArgumentException if the NdefRecord is not a record
-     *         containing a URI.
+     *                                  containing a URI.
      */
     public static UriRecord parse(NdefRecord record) {
         short tnf = record.getTnf();
@@ -121,14 +110,18 @@ public class UriRecord implements ParsedNdefRecord {
         throw new IllegalArgumentException("Unknown TNF " + tnf);
     }
 
-    /** Parse and absolute URI record */
+    /**
+     * Parse and absolute URI record
+     */
     private static UriRecord parseAbsolute(NdefRecord record) {
         byte[] payload = record.getPayload();
         Uri uri = Uri.parse(new String(payload, Charset.forName("UTF-8")));
         return new UriRecord(uri);
     }
 
-    /** Parse an well known URI record */
+    /**
+     * Parse an well known URI record
+     */
     private static UriRecord parseWellKnown(NdefRecord record) {
         Preconditions.checkArgument(Arrays.equals(record.getType(), NdefRecord.RTD_URI));
         byte[] payload = record.getPayload();
@@ -141,8 +134,8 @@ public class UriRecord implements ParsedNdefRecord {
          */
         String prefix = URI_PREFIX_MAP.get(payload[0]);
         byte[] fullUri =
-            Bytes.concat(prefix.getBytes(Charset.forName("UTF-8")), Arrays.copyOfRange(payload, 1,
-                payload.length));
+                Bytes.concat(prefix.getBytes(Charset.forName("UTF-8")), Arrays.copyOfRange(payload, 1,
+                        payload.length));
         Uri uri = Uri.parse(new String(fullUri, Charset.forName("UTF-8")));
         return new UriRecord(uri);
     }
@@ -156,5 +149,15 @@ public class UriRecord implements ParsedNdefRecord {
         }
     }
 
-    private static final byte[] EMPTY = new byte[0];
+    @SuppressLint("SetTextI18n")
+    public View getView(Activity activity, LayoutInflater inflater, ViewGroup parent, int offset) {
+        TextView text = (TextView) inflater.inflate(R.layout.tag_text, parent, false);
+        text.setAutoLinkMask(Linkify.WEB_URLS);
+        text.setText("NDEF type URI:\n" + mUri.toString());
+        return text;
+    }
+
+    public Uri getUri() {
+        return mUri;
+    }
 }

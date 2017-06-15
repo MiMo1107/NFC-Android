@@ -32,23 +32,18 @@ import dk.edu.mikkel.nfc.record.SmartPoster;
 import dk.edu.mikkel.nfc.record.TextRecord;
 import dk.edu.mikkel.nfc.record.UriRecord;
 
-/**
- * Utility class for creating {@link ParsedNdefMessage}s.
- */
 public class NdefMessageParser {
 
-    // Utility class
     private NdefMessageParser() {
 
     }
 
-    /** Parse an NdefMessage */
     public static List<ParsedNdefRecord> parse(NdefMessage message) {
         return getRecords(message.getRecords());
     }
 
     public static List<ParsedNdefRecord> getRecords(NdefRecord[] records) {
-        List<ParsedNdefRecord> elements = new ArrayList<ParsedNdefRecord>();
+        List<ParsedNdefRecord> elements = new ArrayList<>();
         for (final NdefRecord record : records) {
             if (UriRecord.isUri(record)) {
                 elements.add(UriRecord.parse(record));
@@ -57,15 +52,15 @@ public class NdefMessageParser {
             } else if (SmartPoster.isPoster(record)) {
                 elements.add(SmartPoster.parse(record));
             } else {
-            	elements.add(new ParsedNdefRecord() {
-					@Override
-					public View getView(Activity activity, LayoutInflater inflater, ViewGroup parent, int offset) {
-				        TextView text = (TextView) inflater.inflate(R.layout.tag_text, parent, false);
-				        text.setText(new String(record.getPayload()));
-				        return text;
-					}
-            		
-            	});
+                elements.add(new ParsedNdefRecord() {
+                    @Override
+                    public View getView(Activity activity, LayoutInflater inflater, ViewGroup parent, int offset) {
+                        TextView text = (TextView) inflater.inflate(R.layout.tag_text, parent, false);
+                        text.setText(new String(record.getPayload()));
+                        return text;
+                    }
+
+                });
             }
         }
         return elements;

@@ -15,6 +15,7 @@
  */
 package dk.edu.mikkel.nfc.record;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.nfc.NdefRecord;
 import android.view.LayoutInflater;
@@ -34,7 +35,9 @@ import dk.edu.mikkel.nfc.R;
  */
 public class TextRecord implements ParsedNdefRecord {
 
-    /** ISO/IANA language code */
+    /**
+     * ISO/IANA language code
+     */
     private final String mLanguageCode;
 
     private final String mText;
@@ -42,23 +45,6 @@ public class TextRecord implements ParsedNdefRecord {
     private TextRecord(String languageCode, String text) {
         mLanguageCode = Preconditions.checkNotNull(languageCode);
         mText = Preconditions.checkNotNull(text);
-    }
-
-    public View getView(Activity activity, LayoutInflater inflater, ViewGroup parent, int offset) {
-        TextView text = (TextView) inflater.inflate(R.layout.tag_text, parent, false);
-        text.setText("NDEF type Text:\n" + mText);
-        return text;
-    }
-
-    public String getText() {
-        return mText;
-    }
-
-    /**
-     * Returns the ISO/IANA language code associated with this text element.
-     */
-    public String getLanguageCode() {
-        return mLanguageCode;
     }
 
     // TODO: deal with text fields which span multiple NdefRecords
@@ -84,8 +70,8 @@ public class TextRecord implements ParsedNdefRecord {
             int languageCodeLength = payload[0] & 0077;
             String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
             String text =
-                new String(payload, languageCodeLength + 1,
-                    payload.length - languageCodeLength - 1, textEncoding);
+                    new String(payload, languageCodeLength + 1,
+                            payload.length - languageCodeLength - 1, textEncoding);
             return new TextRecord(languageCode, text);
         } catch (UnsupportedEncodingException e) {
             // should never happen unless we get a malformed tag.
@@ -100,5 +86,23 @@ public class TextRecord implements ParsedNdefRecord {
         } catch (IllegalArgumentException e) {
             return false;
         }
+    }
+
+    @SuppressLint("SetTextI18n")
+    public View getView(Activity activity, LayoutInflater inflater, ViewGroup parent, int offset) {
+        TextView text = (TextView) inflater.inflate(R.layout.tag_text, parent, false);
+        text.setText("NDEF type Text:\n" + mText);
+        return text;
+    }
+
+    public String getText() {
+        return mText;
+    }
+
+    /**
+     * Returns the ISO/IANA language code associated with this text element.
+     */
+    public String getLanguageCode() {
+        return mLanguageCode;
     }
 }

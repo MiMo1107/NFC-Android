@@ -33,71 +33,57 @@ import com.google.common.collect.Iterables;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import dk.edu.mikkel.nfc.model.NdefMessageParser;
 import dk.edu.mikkel.nfc.R;
+import dk.edu.mikkel.nfc.model.NdefMessageParser;
 
 /**
  * A representation of an NFC Forum "Smart Poster".
  */
 public class SmartPoster implements ParsedNdefRecord {
 
+    private static final byte[] ACTION_RECORD_TYPE = new byte[]{'a', 'c', 't'};
+    private static final byte[] TYPE_TYPE = new byte[]{'t'};
     /**
      * NFC Forum Smart Poster Record Type Definition section 3.2.1.
-     *
+     * <p>
      * "The Title record for the service (there can be many of these in
      * different languages, but a language MUST NOT be repeated). This record is
      * optional."
      */
     private final TextRecord mTitleRecord;
-
     /**
      * NFC Forum Smart Poster Record Type Definition section 3.2.1.
-     *
+     * <p>
      * "The URI record. This is the core of the Smart Poster, and all other
      * records are just metadata about this record. There MUST be one URI record
      * and there MUST NOT be more than one."
      */
     private final UriRecord mUriRecord;
 
-    /**
-     * NFC Forum Smart Poster Record Type Definition section 3.2.1.
-     *
-     * "The Action record. This record describes how the service should be
-     * treated. For example, the action may indicate that the device should save
-     * the URI as a bookmark or open a browser. The Action record is optional.
-     * If it does not exist, the device may decide what to do with the service.
-     * If the action record exists, it should be treated as a strong suggestion;
-     * the UI designer may ignore it, but doing so will induce a different user
-     * experience from device to device."
-     */
-    private final RecommendedAction mAction;
-
-    /**
-     * NFC Forum Smart Poster Record Type Definition section 3.2.1.
-     *
-     * "The Type record. If the URI references an external entity (e.g., via a
-     * URL), the Type record may be used to declare the MIME type of the entity.
-     * This can be used to tell the mobile device what kind of an object it can
-     * expect before it opens the connection. The Type record is optional."
-     */
-    private final String mType;
-
     private SmartPoster(UriRecord uri, TextRecord title, RecommendedAction action, String type) {
         mUriRecord = Preconditions.checkNotNull(uri);
         mTitleRecord = title;
-        mAction = Preconditions.checkNotNull(action);
-        mType = type;
-    }
+        /*
+      NFC Forum Smart Poster Record Type Definition section 3.2.1.
 
-    public UriRecord getUriRecord() {
-        return mUriRecord;
-    }
-
-    /**
-     * Returns the title of the smart poster. This may be {@code null}.
+      "The Action record. This record describes how the service should be
+      treated. For example, the action may indicate that the device should save
+      the URI as a bookmark or open a browser. The Action record is optional.
+      If it does not exist, the device may decide what to do with the service.
+      If the action record exists, it should be treated as a strong suggestion;
+      the UI designer may ignore it, but doing so will induce a different user
+      experience from device to device."
      */
-    public TextRecord getTitle() {
-        return mTitleRecord;
+        RecommendedAction mAction = Preconditions.checkNotNull(action);
+        /*
+      NFC Forum Smart Poster Record Type Definition section 3.2.1.
+
+      "The Type record. If the URI references an external entity (e.g., via a
+      URL), the Type record may be used to declare the MIME type of the entity.
+      This can be used to tell the mobile device what kind of an object it can
+      expect before it opens the connection. The Type record is optional."
+     */
+        String mType = type;
     }
 
     public static SmartPoster parse(NdefRecord record) {
@@ -111,7 +97,7 @@ public class SmartPoster implements ParsedNdefRecord {
         }
     }
 
-    public static SmartPoster parse(NdefRecord[] recordsRaw) {
+    private static SmartPoster parse(NdefRecord[] recordsRaw) {
         try {
             Iterable<ParsedNdefRecord> records = NdefMessageParser.getRecords(recordsRaw);
             UriRecord uri = Iterables.getOnlyElement(Iterables.filter(records, UriRecord.class));
@@ -133,23 +119,6 @@ public class SmartPoster implements ParsedNdefRecord {
         }
     }
 
-    public View getView(Activity activity, LayoutInflater inflater, ViewGroup parent, int offset) {
-        if (mTitleRecord != null) {
-            // Build a container to hold the title and the URI
-            LinearLayout container = new LinearLayout(activity);
-            container.setOrientation(LinearLayout.VERTICAL);
-            container.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.WRAP_CONTENT));
-            container.addView(mTitleRecord.getView(activity, inflater, container, offset));
-            inflater.inflate(R.layout.tag_divider, container);
-            container.addView(mUriRecord.getView(activity, inflater, container, offset));
-            return container;
-        } else {
-            // Just a URI, return a view for it directly
-            return mUriRecord.getView(activity, inflater, parent, offset);
-        }
-    }
-
     /**
      * Returns the first element of {@code elements} which is an instance of
      * {@code type}, or {@code null} if no such element exists.
@@ -163,30 +132,6 @@ public class SmartPoster implements ParsedNdefRecord {
         return instance;
     }
 
-    private enum RecommendedAction {
-        UNKNOWN((byte) -1), DO_ACTION((byte) 0), SAVE_FOR_LATER((byte) 1), OPEN_FOR_EDITING(
-            (byte) 2);
-
-        private static final ImmutableMap<Byte, RecommendedAction> LOOKUP;
-        static {
-            ImmutableMap.Builder<Byte, RecommendedAction> builder = ImmutableMap.builder();
-            for (RecommendedAction action : RecommendedAction.values()) {
-                builder.put(action.getByte(), action);
-            }
-            LOOKUP = builder.build();
-        }
-
-        private final byte mAction;
-
-        private RecommendedAction(byte val) {
-            this.mAction = val;
-        }
-
-        private byte getByte() {
-            return mAction;
-        }
-    }
-
     private static NdefRecord getByType(byte[] type, NdefRecord[] records) {
         for (NdefRecord record : records) {
             if (Arrays.equals(type, record.getType())) {
@@ -195,8 +140,6 @@ public class SmartPoster implements ParsedNdefRecord {
         }
         return null;
     }
-
-    private static final byte[] ACTION_RECORD_TYPE = new byte[] {'a', 'c', 't'};
 
     private static RecommendedAction parseRecommendedAction(NdefRecord[] records) {
         NdefRecord record = getByType(ACTION_RECORD_TYPE, records);
@@ -210,13 +153,64 @@ public class SmartPoster implements ParsedNdefRecord {
         return RecommendedAction.UNKNOWN;
     }
 
-    private static final byte[] TYPE_TYPE = new byte[] {'t'};
-
     private static String parseType(NdefRecord[] records) {
         NdefRecord type = getByType(TYPE_TYPE, records);
         if (type == null) {
             return null;
         }
         return new String(type.getPayload(), Charsets.UTF_8);
+    }
+
+    public UriRecord getUriRecord() {
+        return mUriRecord;
+    }
+
+    /**
+     * Returns the title of the smart poster. This may be {@code null}.
+     */
+    public TextRecord getTitle() {
+        return mTitleRecord;
+    }
+
+    public View getView(Activity activity, LayoutInflater inflater, ViewGroup parent, int offset) {
+        if (mTitleRecord != null) {
+            // Build a container to hold the title and the URI
+            LinearLayout container = new LinearLayout(activity);
+            container.setOrientation(LinearLayout.VERTICAL);
+            container.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+                    LayoutParams.WRAP_CONTENT));
+            container.addView(mTitleRecord.getView(activity, inflater, container, offset));
+            inflater.inflate(R.layout.tag_divider, container);
+            container.addView(mUriRecord.getView(activity, inflater, container, offset));
+            return container;
+        } else {
+            // Just a URI, return a view for it directly
+            return mUriRecord.getView(activity, inflater, parent, offset);
+        }
+    }
+
+    private enum RecommendedAction {
+        UNKNOWN((byte) -1), DO_ACTION((byte) 0), SAVE_FOR_LATER((byte) 1), OPEN_FOR_EDITING(
+                (byte) 2);
+
+        private static final ImmutableMap<Byte, RecommendedAction> LOOKUP;
+
+        static {
+            ImmutableMap.Builder<Byte, RecommendedAction> builder = ImmutableMap.builder();
+            for (RecommendedAction action : RecommendedAction.values()) {
+                builder.put(action.getByte(), action);
+            }
+            LOOKUP = builder.build();
+        }
+
+        private final byte mAction;
+
+        RecommendedAction(byte val) {
+            this.mAction = val;
+        }
+
+        private byte getByte() {
+            return mAction;
+        }
     }
 }

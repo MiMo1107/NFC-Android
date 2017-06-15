@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">NFC bundle</string>
+    <string name="general_error">Error</string>
+    <string name="general_noSupport">This device does not support NFC</string>
+    <string name="general_ok">Okay</string>
+    <string name="cardInfo_wait">Wait while reading data...</string>
+    <string name="cardInfo_onlyIso">Can only read ISO tags</string>
+    <string name="cardInfo_done">Done reading</string>
+    <string name="general_lostConnection">Lost connection</string>
+    <string name="general_nfcNotEnabled">NFC is not enabled. Please go to the wireless settings to enable it.</string>
+    <string name="general_noNDEF">No NDEF support</string>
+    <string name="eraser_cleanSuccess">Clean tag success</string>
+    <string name="eraser_formatSuccess">Format tag success</string>
+    <string name="eraser_deleteSuccess">Tag formatting deleted</string>
+    <string name="general_tagDiscovered">Tag discovered</string>
+    <string name="reader_tagInfo">Tag information:</string>
+    <string name="reader_tech">Technologies:</string>
+    <string name="writer_success">Text written to the NFC tag successfully!</string>
+    <string name="write_noNdef">Tag needs to be NDEF formatted</string>
+    <string name="write_noSupport">Tag not supported</string>
 </resources>
