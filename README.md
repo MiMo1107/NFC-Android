@@ -8,9 +8,6 @@ Simple Android application showing the usage of NFC in Android for educational p
 - Remove NDEF formatting
 - Credit card reader
 
-### Comming soon features
-- NDEF action creator
-
 ## Images
 <img alt="Screenshot" src="https://raw.githubusercontent.com/MiMo1107/NFC-Android/master/20170615_184709.png" width="350">
 
