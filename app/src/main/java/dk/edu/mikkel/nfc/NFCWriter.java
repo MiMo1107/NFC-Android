@@ -112,9 +112,12 @@ public class NFCWriter extends AppCompatActivity {
         String text = "";
 //        String tagId = new String(msgs[0].getRecords()[0].getType());
         byte[] payload = msgs[0].getRecords()[0].getPayload();
-        String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16"; // Get the Text Encoding
-        int languageCodeLength = payload[0] & 0063; // Get the Language Code, e.g. "en"
-        // String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
+        String textEncoding = "UTF-16";
+        int languageCodeLength = 0063;
+        if(payload.length > 0){
+            textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16"; // Get the Text Encoding
+            languageCodeLength = payload[0] & 0063; // Get the Language Code, e.g. "en"
+        }
 
         try {
             // Get the Text

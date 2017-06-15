@@ -12,6 +12,7 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.nfc.tech.MifareUltralight;
 import android.nfc.tech.Ndef;
 import android.nfc.tech.NdefFormatable;
 import android.os.Parcelable;
@@ -19,6 +20,7 @@ import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,6 +29,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 public class NDEFEraser extends AppCompatActivity {
 
@@ -129,7 +132,7 @@ public class NDEFEraser extends AppCompatActivity {
     }
 
     public void deleteClick(View view){
-            deleteFormating(Ndef.get(myTag));
+            deleteFormating(MifareUltralight.get(myTag));
     }
 
     private void cleanTag(Ndef ndef, NdefMessage msg){
@@ -183,22 +186,23 @@ public class NDEFEraser extends AppCompatActivity {
             }
     }
 
-    private void deleteFormating (Ndef ndefTag) {
-        if(ndefTag != null){
-            try {
-                ndefTag.connect();
-                ndefTag.writeNdefMessage(new NdefMessage(new NdefRecord(NdefRecord.TNF_EMPTY, null, null, null)));
-                ndefTag.close();
+    private void deleteFormating (MifareUltralight mifare) {
+        try {
+            if(mifare != null){
+                mifare.connect();
+                for(int i = 39; i > 3; i--){
+                    mifare.writePage(i,new byte[4]);
+                    Log.d("Clean page",i + ": Done");
+                }
+                mifare.close();
                 Toast.makeText(this, "Tag formatting deleted", Toast.LENGTH_SHORT).show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (FormatException e) {
-                e.printStackTrace();
+            } else {
+                Toast.makeText(this, "Lost connection to the tag", Toast.LENGTH_SHORT).show();
             }
-        } else {
+        } catch (Exception ex) {
+            ex.printStackTrace();
             Toast.makeText(this, "Lost connection to the tag", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     private NdefRecord createRecord(String text) throws UnsupportedEncodingException {
