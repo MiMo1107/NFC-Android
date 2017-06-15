@@ -12,7 +12,7 @@ Simple Android application showing the usage of NFC in Android for educational p
 - NDEF action creator
 
 ## Images
-Screenshots to be uploaded soon
+<img alt="Screenshot" src="https://raw.githubusercontent.com/MiMo1107/NFC-Android/master/20170615_184709.png" width="350">
 
 ## Inspiration
 - https://github.com/nadam/nfc-reader
