@@ -6,10 +6,10 @@ Simple Android application showing the usage of NFC in Android
 - NFC Texting
 - NDEF clean formatting
 - Remove NDEF formatting
+- Simple Credit card reader
 
 ### Comming soon features
 - NDEF action creator
-- Credit card reader
 
 ## Images
 Screenshots to be uploaded soon
